@@ -12,6 +12,10 @@
           fn;
 
       if (!data) {
+        if (/destroy/.test(options)) {
+          return;
+        }
+
         $this.data('cropper', (data = new Cropper(this, options)));
       }
 
@@ -20,7 +24,7 @@
       }
     });
 
-    return !isUndefined(result) ? result : this;
+    return isUndefined(result) ? this : result;
   };
 
   $.fn.cropper.Constructor = Cropper;

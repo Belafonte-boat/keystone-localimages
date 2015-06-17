@@ -1,16 +1,21 @@
-  prototype.load = function () {
-    var _this = this,
-        options = this.options,
+  prototype.load = function (url) {
+    var options = this.options,
         $this = this.$element,
-        crossOrigin = '',
+        crossOrigin,
+        bustCacheUrl,
         buildEvent,
-        $clone,
-        url;
+        $clone;
 
-    if ($this.is('img')) {
-      url = $this.prop('src');
-    } else if ($this.is('canvas') && support.canvas) {
-      url = $this[0].toDataURL();
+    if (!url) {
+      if ($this.is('img')) {
+        if (!$this.attr('src')) {
+          return;
+        }
+
+        url = $this.prop('src');
+      } else if ($this.is('canvas') && SUPPORT_CANVAS) {
+        url = $this[0].toDataURL();
+      }
     }
 
     if (!url) {
@@ -24,31 +29,36 @@
       return;
     }
 
-    if (options.checkImageOrigin) {
-      if (isCrossOriginURL(url)) {
-        crossOrigin = ' crossOrigin'; // crossOrigin="anonymous"
-        url = addTimestamp(url); // Bust cache (#148)
+    if (options.checkImageOrigin && isCrossOriginURL(url)) {
+      crossOrigin = ' crossOrigin="anonymous"';
+
+      if (!$this.prop('crossOrigin')) { // Only when there was not a "crossOrigin" property
+        bustCacheUrl = addTimestamp(url); // Bust cache (#148)
       }
     }
 
-    this.$clone = ($clone = $('<img' + crossOrigin + ' src="' + url + '">'));
+    // IE8 compatibility: Don't use "$().attr()" to set "src"
+    this.$clone = $clone = $('<img' + (crossOrigin || '') + ' src="' + (bustCacheUrl || url) + '">');
 
-    $clone.one('load', function () {
-      var naturalWidth = this.naturalWidth || $clone.width(),
-          naturalHeight = this.naturalHeight || $clone.height();
+    $clone.one('load', $.proxy(function () {
+      var image = $clone[0],
+          naturalWidth = image.naturalWidth || image.width,
+          naturalHeight = image.naturalHeight || image.height; // $clone.width() and $clone.height() will return 0 in IE8 (#319)
 
-      _this.image = {
+      this.image = {
         naturalWidth: naturalWidth,
         naturalHeight: naturalHeight,
         aspectRatio: naturalWidth / naturalHeight,
         rotate: 0
       };
 
-      _this.url = url;
-      _this.ready = true;
-      _this.build();
+      this.url = url;
+      this.ready = true;
+      this.build();
+    }, this)).one('error', function () {
+      $clone.remove();
     });
 
     // Hide and insert into the document
-    $clone.addClass(CLASS_HIDE).prependTo('body');
+    $clone.addClass(CLASS_HIDE).insertAfter($this);
   };

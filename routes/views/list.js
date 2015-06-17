@@ -1,6 +1,7 @@
 var keystone = require('../../'),
 	_ = require('underscore'),
-	querystring = require('querystring');
+	querystring = require('querystring'),
+	async = require('async');
 
 exports = module.exports = function(req, res) {
 	
@@ -109,25 +110,28 @@ exports = module.exports = function(req, res) {
 				download_link += '?' + downloadParams;
 			}
 			
-			var appName = keystone.get('name') || 'Keystone';
+			var compileFields = function(item, callback) { item.compile('initial', callback); };
 			
-			keystone.render(req, res, 'list', _.extend(viewLocals, {
-				section: keystone.nav.by.list[req.list.key] || {},
-				title: appName + ': ' + req.list.plural,
-				page: 'list',
-				link_to: link_to,
-				download_link: download_link,
-				list: req.list,
-				sort: sort,
-				filters: cleanFilters,
-				search: req.query.search,
-				columns: columns,
-				colPaths: _.pluck(columns, 'path'),
-				items: items,
-				submitted: req.body || {},
-				query: req.query
-			}));
-			
+			async.eachSeries(req.list.initialFields, compileFields , function() {
+				
+				keystone.render(req, res, 'list', _.extend(viewLocals, {
+					section: keystone.nav.by.list[req.list.key] || {},
+					title: 'Keystone: ' + req.list.plural,
+					page: 'list',
+					link_to: link_to,
+					download_link: download_link,
+					list: req.list,
+					sort: sort,
+					filters: cleanFilters,
+					search: req.query.search,
+					columns: columns,
+					colPaths: _.pluck(columns, 'path'),
+					items: items,
+					submitted: req.body || {},
+					query: req.query
+				}));
+				
+			});
 		});
 	
 	};
@@ -135,7 +139,6 @@ exports = module.exports = function(req, res) {
 	var checkCSRF = function() {
 		var pass = keystone.security.csrf.validate(req);
 		if (!pass) {
-			console.error('CSRF failure');
 			req.flash('error', 'There was a problem with your request, please try again.');
 		}
 		return pass;
@@ -230,12 +233,11 @@ exports = module.exports = function(req, res) {
 		}
 		
 		updateHandler.process(req.body, {
-			// flashErrors: true,
+			flashErrors: true,
 			logErrors: true,
 			fields: req.list.initialFields
 		}, function(err) {
 			if (err) {
-				viewLocals.createErrors = err;
 				return renderView();
 			}
 			req.flash('success', 'New ' + req.list.singular + ' ' + req.list.getDocumentName(item) + ' created.');

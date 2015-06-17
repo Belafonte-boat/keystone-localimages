@@ -5,19 +5,23 @@
   position: relative;
   overflow: hidden;
   .user-select(none);
+  direction: ltr !important; // Ignore global rtl
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
 
   img {
     display: block; // Avoid margin top issue (Occur only when margin-top <= -height)
+    image-orientation: 0deg !important; // https://developer.mozilla.org/en-US/docs/Web/CSS/image-orientation
     .square(100%);
     .min-square(e("0 !important"));
     .max-square(e("none !important"));
   }
 }
 
-.cropper-modal,
-.cropper-canvas {
+.cropper-canvas,
+.cropper-drag-box,
+.cropper-crop-box,
+.cropper-modal {
   position: absolute;
   top: 0;
   right: 0;
@@ -25,7 +29,7 @@
   left: 0;
 }
 
-.cropper-canvas {
+.cropper-drag-box {
   background-color: #fff;
   .opacity(0);
 }
@@ -35,14 +39,7 @@
   .opacity(.5);
 }
 
-.cropper-cropbox {
-  position: absolute;
-  top: 10%;
-  left: 10%;
-  .square(80%);
-}
-
-.cropper-viewer {
+.cropper-view-box {
   display: block;
   .square(100%);
   overflow: hidden;
@@ -85,7 +82,6 @@
 .cropper-face {
   top: 0;
   left: 0;
-  cursor: move;
   background-color: #fff;
 }
 

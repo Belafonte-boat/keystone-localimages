@@ -1,5 +1,5 @@
 jQuery(function($) {
-	
+
 	// Local File
 	$('.field.type-localfile').each(function() {
 

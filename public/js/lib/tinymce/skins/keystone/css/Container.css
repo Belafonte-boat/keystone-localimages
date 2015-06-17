@@ -1,0 +1,7 @@
+.mce-container,
+.mce-container-body {
+  display: block;
+}
+.mce-autoscroll {
+  overflow: hidden;
+}

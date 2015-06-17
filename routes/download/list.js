@@ -66,21 +66,16 @@ exports = module.exports = function(req, res) {
 	}
 	query.exec(function(err, results) {
 
-		if (err) return res.status(500).json(err);
-
 		var sendCSV = function(data) {
 
 			var columns = data.length ? Object.keys(data[0]) : [];
-			res.attachment(req.list.path + '-' + moment().format('YYYYMMDD-HHMMSS') + '.csv');
-			res.setHeader('Content-Type', 'application/octet-stream');
 
-			csv().from(data).to.options({
+			csv().from(data).to(res.attachment(req.list.path + '-' + moment().format('YYYYMMDD-HHMMSS') + '.csv'), {
 				header: true,
 				columns: columns,
 				delimiter: keystone.get('csv field delimiter') || ','
-			}).to.string(function(data) {
-				res.end('\ufeff' + data, 'utf-8');
 			});
+
 		};
 
 		if (!results.length) {

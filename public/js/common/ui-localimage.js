@@ -58,7 +58,7 @@ jQuery(function($) {
 							return function(e) {
 								renderPlaceholder();
 								var $cropper = $uploadQueued.find('.file-cropper');
-								$cropper.append( '<img src="'+e.target.result+'"/>' );
+								$cropper.html( '<img src="'+e.target.result+'"/>' );
 								
 								
 								
@@ -99,7 +99,7 @@ jQuery(function($) {
 								                ].join();
 								            
 								            $data.val(json);
-								            $el.find('.field-data').val(json);
+								            
 								    	}
 								    });
 								$('.file-cropper > img').on('built.cropper', function (e) {
