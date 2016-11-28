@@ -2,24 +2,26 @@
   Cropper.other = $.fn.cropper;
 
   // Register as jQuery plugin
-  $.fn.cropper = function (options) {
-    var args = toArray(arguments, 1),
-        result;
+  $.fn.cropper = function (option) {
+    var args = toArray(arguments, 1);
+    var result;
 
     this.each(function () {
-      var $this = $(this),
-          data = $this.data('cropper'),
-          fn;
+      var $this = $(this);
+      var data = $this.data(NAMESPACE);
+      var options;
+      var fn;
 
       if (!data) {
-        if (/destroy/.test(options)) {
+        if (/destroy/.test(option)) {
           return;
         }
 
-        $this.data('cropper', (data = new Cropper(this, options)));
+        options = $.extend({}, $this.data(), $.isPlainObject(option) && option);
+        $this.data(NAMESPACE, (data = new Cropper(this, options)));
       }
 
-      if (typeof options === 'string' && $.isFunction((fn = data[options]))) {
+      if (typeof option === 'string' && $.isFunction(fn = data[option])) {
         result = fn.apply(data, args);
       }
     });

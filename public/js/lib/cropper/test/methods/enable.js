@@ -8,9 +8,9 @@ $(function () {
     built: function () {
       var cropper = $image.data('cropper');
 
-      QUnit.test('methods.enable', function (assert) {
+      QUnit.test('methods#enable', function (assert) {
         $image.cropper('disable').cropper('enable');
-        assert.ok(!cropper.disabled);
+        assert.equal(cropper.isDisabled, false);
         assert.ok(!cropper.$cropper.hasClass('cropper-disabled'));
       });
 

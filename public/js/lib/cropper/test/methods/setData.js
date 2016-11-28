@@ -2,22 +2,22 @@ $(function () {
 
   'use strict';
 
-  var $image = $(window.createCropperImage()),
-      isNumber = function (n) {
-        return typeof n === 'number' && !isNaN(n);
-      };
+  var $image = $(window.createCropperImage());
+
+  function isNumber(n) {
+    return typeof n === 'number' && !isNaN(n);
+  }
 
   $image.cropper({
     built: function () {
       var _data = $image.cropper('getData');
 
-      QUnit.test('methods.setData', function (assert) {
+      QUnit.test('methods#setData', function (assert) {
         var data = $image.cropper('setData', {
               x: 16,
               height: 120
             }).cropper('getData');
 
-        assert.ok($.isPlainObject(data));
         assert.ok(isNumber(data.x));
         assert.ok(isNumber(data.y));
         assert.ok(isNumber(data.width));
@@ -29,7 +29,7 @@ $(function () {
         assert.notEqual(data.height, _data.height);
       });
 
-      QUnit.test('methods.setData: move', function (assert) {
+      QUnit.test('methods#setData: move', function (assert) {
         var data = $image.cropper('reset').cropper('setData', {
               x: 16,
               y: 9
@@ -42,7 +42,7 @@ $(function () {
       });
 
 
-      QUnit.test('methods.setData: resize', function (assert) {
+      QUnit.test('methods#setData: resize', function (assert) {
         var data = $image.cropper('reset').cropper('setData', {
               width: 320,
               height: 180

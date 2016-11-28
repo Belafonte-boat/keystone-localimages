@@ -10,9 +10,9 @@ $(function () {
     built: function () {
       var cropper = $image.data('cropper');
 
-      QUnit.test('methods.crop', function (assert) {
+      QUnit.test('methods#crop', function (assert) {
         $image.cropper('crop');
-        assert.ok(cropper.cropped);
+        assert.equal(cropper.isCropped, true);
         assert.ok(cropper.$cropBox.is(':visible'));
       });
 

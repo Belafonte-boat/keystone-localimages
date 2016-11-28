@@ -1,10 +1,12 @@
 (function (factory) {
   if (typeof define === 'function' && define.amd) {
+    // AMD. Register as anonymous module.
     define(['jquery'], factory);
   } else if (typeof exports === 'object') {
     // Node / CommonJS
     factory(require('jquery'));
   } else {
+    // Browser globals.
     factory(jQuery);
   }
 })(function ($) {
@@ -33,7 +35,6 @@
     this.$avatarPreview = this.$avatarModal.find('.avatar-preview');
 
     this.init();
-    console.log(this);
   }
 
   CropAvatar.prototype = {
@@ -79,16 +80,16 @@
     initPreview: function () {
       var url = this.$avatar.attr('src');
 
-      this.$avatarPreview.empty().html('<img src="' + url + '">');
+      this.$avatarPreview.html('<img src="' + url + '">');
     },
 
     initIframe: function () {
-      var target = 'upload-iframe-' + (new Date()).getTime(),
-          $iframe = $('<iframe>').attr({
+      var target = 'upload-iframe-' + (new Date()).getTime();
+      var $iframe = $('<iframe>').attr({
             name: target,
             src: ''
-          }),
-          _this = this;
+          });
+      var _this = this;
 
       // Ready ifrmae
       $iframe.one('load', function () {
@@ -130,8 +131,8 @@
     },
 
     change: function () {
-      var files,
-          file;
+      var files;
+      var file;
 
       if (this.support.datauri) {
         files = this.$avatarInput.prop('files');
@@ -199,14 +200,13 @@
         this.$img.cropper({
           aspectRatio: 1,
           preview: this.$avatarPreview.selector,
-          strict: false,
-          crop: function (data) {
+          crop: function (e) {
             var json = [
-                  '{"x":' + data.x,
-                  '"y":' + data.y,
-                  '"height":' + data.height,
-                  '"width":' + data.width,
-                  '"rotate":' + data.rotate + '}'
+                  '{"x":' + e.x,
+                  '"y":' + e.y,
+                  '"height":' + e.height,
+                  '"width":' + e.width,
+                  '"rotate":' + e.rotate + '}'
                 ].join();
 
             _this.$avatarData.val(json);
@@ -215,6 +215,11 @@
 
         this.active = true;
       }
+
+      this.$avatarModal.one('hidden.bs.modal', function () {
+        _this.$avatarPreview.empty();
+        _this.stopCropper();
+      });
     },
 
     stopCropper: function () {
@@ -226,9 +231,9 @@
     },
 
     ajaxUpload: function () {
-      var url = this.$avatarForm.attr('action'),
-          data = new FormData(this.$avatarForm[0]),
-          _this = this;
+      var url = this.$avatarForm.attr('action');
+      var data = new FormData(this.$avatarForm[0]);
+      var _this = this;
 
       $.ajax(url, {
         type: 'post',

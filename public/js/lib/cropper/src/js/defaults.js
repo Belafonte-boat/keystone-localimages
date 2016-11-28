@@ -1,46 +1,84 @@
   Cropper.DEFAULTS = {
-    // Defines the aspect ratio of the crop box
-    // Type: Number
+
+    // Define the view mode of the cropper
+    viewMode: 0, // 0, 1, 2, 3
+
+    // Define the dragging mode of the cropper
+    dragMode: 'crop', // 'crop', 'move' or 'none'
+
+    // Define the aspect ratio of the crop box
     aspectRatio: NaN,
 
-    // Defines the percentage of automatic cropping area when initializes
-    // Type: Number (Must large than 0 and less than 1)
-    autoCropArea: 0.8, // 80%
-
-    // Outputs the cropping results.
-    // Type: Function
-    crop: null,
-
-    // Previous/latest crop data
-    // Type: Object
+    // An object with the previous cropping result data
     data: null,
 
-    // Add extra containers for previewing
-    // Type: String (jQuery selector)
+    // A jQuery selector for adding extra containers to preview
     preview: '',
 
-    // Toggles
-    strict: true, // strict mode, the image cannot zoom out less than the container
-    responsive: true, // Rebuild when resize the window
-    checkImageOrigin: true, // Check if the target image is cross origin
+    // Re-render the cropper when resize the window
+    responsive: true,
 
-    modal: true, // Show the black modal
-    guides: true, // Show the dashed lines for guiding
-    highlight: true, // Show the white modal to highlight the crop box
-    background: true, // Show the grid background
+    // Restore the cropped area after resize the window
+    restore: true,
 
-    autoCrop: true, // Enable to crop the image automatically when initialize
-    dragCrop: true, // Enable to create new crop box by dragging over the image
-    movable: true, // Enable to move the image
-    rotatable: true, // Enable to rotate the image
-    zoomable: true, // Enable to zoom the image
-    touchDragZoom: true, // Enable to zoom the image by wheeling mouse
-    mouseWheelZoom: true, // Enable to zoom the image by dragging touch
-    cropBoxMovable: true, // Enable to move the crop box
-    cropBoxResizable: true, // Enable to resize the crop box
-    doubleClickToggle: true, // Toggle drag mode between "crop" and "move" when double click on the cropper
+    // Check if the current image is a cross-origin image
+    checkCrossOrigin: true,
 
-    // Dimensions
+    // Check the current image's Exif Orientation information
+    checkOrientation: true,
+
+    // Show the black modal
+    modal: true,
+
+    // Show the dashed lines for guiding
+    guides: true,
+
+    // Show the center indicator for guiding
+    center: true,
+
+    // Show the white modal to highlight the crop box
+    highlight: true,
+
+    // Show the grid background
+    background: true,
+
+    // Enable to crop the image automatically when initialize
+    autoCrop: true,
+
+    // Define the percentage of automatic cropping area when initializes
+    autoCropArea: 0.8,
+
+    // Enable to move the image
+    movable: true,
+
+    // Enable to rotate the image
+    rotatable: true,
+
+    // Enable to scale the image
+    scalable: true,
+
+    // Enable to zoom the image
+    zoomable: true,
+
+    // Enable to zoom the image by dragging touch
+    zoomOnTouch: true,
+
+    // Enable to zoom the image by wheeling mouse
+    zoomOnWheel: true,
+
+    // Define zoom ratio when zoom the image by wheeling mouse
+    wheelZoomRatio: 0.1,
+
+    // Enable to move the crop box
+    cropBoxMovable: true,
+
+    // Enable to resize the crop box
+    cropBoxResizable: true,
+
+    // Toggle drag mode between "crop" and "move" when click twice on the cropper
+    toggleDragModeOnDblclick: true,
+
+    // Size limitation
     minCanvasWidth: 0,
     minCanvasHeight: 0,
     minCropBoxWidth: 0,
@@ -48,15 +86,14 @@
     minContainerWidth: 200,
     minContainerHeight: 100,
 
-    // Events
-    build: null, // Function
-    built: null, // Function
-    dragstart: null, // Function
-    dragmove: null, // Function
-    dragend: null, // Function
-    zoomin: null, // Function
-    zoomout: null, // Function
-    change: null // Function
+    // Shortcuts of events
+    build: null,
+    built: null,
+    cropstart: null,
+    cropmove: null,
+    cropend: null,
+    crop: null,
+    zoom: null
   };
 
   Cropper.setDefaults = function (options) {
